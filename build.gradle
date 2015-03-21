@@ -17,14 +17,48 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.1"
+version = "1.7.10-0.1.0-SNAPSHOT"
 group= "ca.bradj.byprod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ByProd"
 
 minecraft {
-    version = "1.7.10-10.13.0.1180"
+    version = "1.7.10-10.13.2.1230"
     assetDir = "eclipse/assets"
 }
+
+repositories {
+	maven {
+        name 'BradJ'
+        url 'http://bradj.ca:8081/nexus/content/repositories/snapshots'
+ 	}
+	maven {
+        name 'BradJ'
+        url 'http://bradj.ca:8081/nexus/content/repositories/releases'
+ 	}
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies { 
+	shade 'ca.bradj:Forge:1.7.10-1.0.0-SNAPSHOT'
+    compile 'ca.bradj:OreCore:1.7.10-2.1.0'
+	compile 'ca.bradj:OreCoreMin:1.7.10-1.0.2'
+}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+}
+
+minecraft {
+    srgExtra "PK: ca/bradj/forge ca/bradj/orecoremin/forge"
+} 
 
 dependencies {
     // you may put jars on which you depend on in ./libs
